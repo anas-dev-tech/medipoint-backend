@@ -1,4 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
+
+from apps.doctors.models import Doctor
 from .models import Review, Comment
 from .serializers import ReviewSerializer, CommentSerializer
 from .permissions import IsReviewOwnerOrReadOnly, IsCommentOwner
@@ -14,25 +16,19 @@ class ReviewsViewSet(ModelViewSet):
 
     
     def get_queryset(self):
-        if self.kwargs.get("appointment_pk"):                
-            return super().get_queryset().filter(appointment_id=self.kwargs.get("appointment_pk"))
+        if self.kwargs.get("doctor_pk"):                
+            return super().get_queryset().filter(doctor_id=self.kwargs.get("doctor_pk"))
             
             
         return super().get_queryset()
 
     def perform_create(self, serializer):
-        appointment_pk = self.kwargs.get("appointment_pk")
-        if appointment_pk and appointment_pk.isdigit():
-            try:
-                appointment = Review.objects.get(pk=appointment_pk)
-            except Review.DoesNotExist:
-                raise NotFound("Appointment not found.")
-
-            if appointment.patient != self.request.user.patient:
-                raise PermissionDenied("You can only review your own appointments.")
-            serializer.save(appointment_id=appointment, patient=self.request.user.patient)
+        doctor_id = self.kwargs.get("doctor_pk")
+        if doctor_id:
+           doctor = get_object_or_404(Doctor, pk=doctor_id)
+           serializer.save(patient=self.request.user.patient, doctor=doctor)
         else:
-            raise ValueError("Appointment ID is required to create a review.")
+            raise NotFound("Doctor not found for creating review.")
 
 
 class CommentsViewSet(ModelViewSet):
