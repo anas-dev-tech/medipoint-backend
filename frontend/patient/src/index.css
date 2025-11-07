@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&family=Outfit:wght@100..900&display=swap');
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+*{
+  font-family: Outfit;
+}
+
+
+.active hr{
+  @apply block
+}
+
+::-webkit-scrollbar{
+  @apply hidden;
+}
+
+@media (max-width: 740px) {
+  .active p{
+    @apply text-white bg-primary
+  }
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw; /* Full viewport width */
+  height: 100vh; /* Full viewport height */
+  position: fixed; /* Fixed positioning ensures it stays on top */
+  top: 0;
+  left: 0;
+  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+  z-index: 9999; /* High z-index ensures it appears above everything else */
+}
